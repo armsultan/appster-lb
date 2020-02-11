@@ -2,3 +2,5 @@
 nginx-repo.crt
 nginx-repo.key
 .DS_Store
+.key
+.crt
