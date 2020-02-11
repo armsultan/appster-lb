@@ -1,4 +1,4 @@
-# Nginx Plus Base
+# Appster Load Balancer
 
 A CICD demo for NGINX Plus **Load Balancing**
 
@@ -55,12 +55,13 @@ A CICD demo for NGINX Plus **Load Balancing**
 
 ## Demos
 
-Example 1. Update nginx config
+### Example 1. Update nginx config
 
 example here
 
-# This works with both GNU and BSD versions of sed:
 ```bash
+# This works with both GNU and BSD versions of sed:
+
 # replace iphone 7 image to iphone x
 sed -i '' 's/iphone_7.png/iphone_x.png/g' etc/nginx/html/index.html
 
@@ -70,4 +71,6 @@ sed -i '' 's/iphone_x.png/iphone_7.png/g' etc/nginx/html/index.html
 
 1. Commit and push changes to code repository:
 
+```bash
 git add .; git commit -m "update URL rewrite rule"; git push origin master
+```
