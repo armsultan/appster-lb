@@ -15,17 +15,21 @@ variables:
 replace_test_placeholder_values: # CI_JOB_NAME
   stage: configure_test
   script:
-    - echo "$NGINX_REPO_CRT" > "etc/ssl/nginx/nginx-repo.crt"
-    - echo "$NGINX_REPO_KEY" > "etc/ssl/nginx/nginx-repo.key"
-    # - cp /etc/ssl/nginx/nginx-repo.* etc/ssl/nginx/
+    # Copy NGINX Plus cert and key stored in GITLAB. Required to run NGINX Plus
+    # - echo "$NGINX_REPO_CRT" > "etc/ssl/nginx/nginx-repo.crt"
+    # - echo "$NGINX_REPO_KEY" > "etc/ssl/nginx/nginx-repo.key"
+    # Copy Self-signed cert and key stored in GITLAB. Required to test TLS
+    - echo "$SELF_SIGNED_KEY" > "etc/ssl/appster.com.key"
+    - echo "$SELF_SIGNED_CRT" > "etc/ssl/appster.com.crt"
+    # Copy test DHPARAMS stored in GITLAB.. Required to test TLS
+    - echo "$DHPARAMS_2048" > "etc/ssl/dhparam_2048.pem"
+    - echo "$DHPARAMS_4096" > "etc/ssl/dhparam_4096.pem"
     # Point load balancing to test upstream (linux search and replace)
     - find . -type f -name ".conf" -exec sed -i 's/${upstream}/dummy_servers_html/g' {} +
 
 build_nginx_container: # CI_JOB_NAME
   stage: build
   script:
-    # - echo $NGINX_REPO_KEY > etc/ssl/nginx/nginx-repo.key
-    # - echo $NGINX_REPO_CRT > etc/ssl/nginx/nginx-repo.crt
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" https://registry.gitlab.com
     - docker pull $CONTAINER_NGINX_PLUS
     - cp /etc/ssl/nginx/nginx-repo.* etc/ssl/nginx/
@@ -33,8 +37,6 @@ build_nginx_container: # CI_JOB_NAME
 build_crossplane_container: # CI_JOB_NAME
   stage: build
   script:
-    # - echo $NGINX_REPO_KEY > etc/ssl/nginx/nginx-repo.key
-    # - echo $NGINX_REPO_CRT > etc/ssl/nginx/nginx-repo.crt
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" https://registry.gitlab.com
     - docker pull $CONTAINER_CROSSPLANE
     - cp /etc/ssl/nginx/nginx-repo.* etc/ssl/nginx/
