@@ -47,30 +47,41 @@ A CICD demo for NGINX Plus **Load Balancing**
                └── state/ # The recommended path for storing state files on Linux distributions
 ```
 
-## Build Docker container
-
- 1. Copy and paste your `nginx-repo.crt` and `nginx-repo.key` into `etc/ssl/nginx` directory
-
+## Setup instructions
 
 
 ## Demos
 
 ### Example 1. Update nginx config
 
-example here
+In this example we will configure a HTTPS redirect
 
-```bash
-# This works with both GNU and BSD versions of sed:
+1. Uncomment the following lines to enable HTTP to HTTPS redirect for [www2.appster.com](http://www2.appster.com)
 
-# replace iphone 7 image to iphone x
-sed -i '' 's/iphone_7.png/iphone_x.png/g' etc/nginx/html/index.html
+**Before** `/etc/nginx.conf.d/www2.appster.com.conf`:
 
-# replace iphone x image to iphone 7
-sed -i '' 's/iphone_x.png/iphone_7.png/g' etc/nginx/html/index.html
+```ini
+# www2.example.com HTTP Redirect to HTTPS
+# server {
+#     listen 80;
+#     server_name www2.appster.com;
+#     return 301 https://$host$request_uri;
+# }
 ```
 
-1. Commit and push changes to code repository:
+**After** `/etc/nginx.conf.d/www2.appster.com.conf`:
+
+```ini
+# www2.example.com HTTP Redirect to HTTPS
+server {
+    listen 80;
+    server_name www2.appster.com;
+    return 301 https://$host$request_uri;
+}
+```
+
+2. Commit and push changes to code repository:
 
 ```bash
-git add .; git commit -m "update URL rewrite rule"; git push origin master
+git add .; git commit -m "Add HTTPS redirect rule for www2.appster.com"; git push origin master
 ```
