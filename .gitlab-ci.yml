@@ -13,7 +13,6 @@ variables:
   NAME_CONTAINER_CROSSPLANE: nginx-plus-crossplane-appster-lb
 
 before_script:
-  stage: test_nginx_conf
     # Copy Self-signed cert and key stored in GITLAB. Required to test TLS
     - echo "$SELF_SIGNED_KEY" > "etc/ssl/appster.com.key"
     - echo "$SELF_SIGNED_CRT" > "etc/ssl/appster.com.crt"
