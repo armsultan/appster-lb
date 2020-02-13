@@ -12,7 +12,7 @@ variables:
   NAME_CONTAINER_NGINX: nginx-plus-appster-lb # container name
   NAME_CONTAINER_CROSSPLANE: nginx-plus-crossplane-appster-lb
 
-replace_test_placeholder_values: # CI_JOB_NAME
+configure_test_env: # CI_JOB_NAME
   stage: configure_test
   script:
     # Copy Self-signed cert and key stored in GITLAB. Required to test TLS
@@ -22,7 +22,7 @@ replace_test_placeholder_values: # CI_JOB_NAME
     - echo "$DHPARAMS_2048" > "etc/ssl/dhparam_2048.pem"
     - echo "$DHPARAMS_4096" > "etc/ssl/dhparam_4096.pem"
     # Point to Test environment for testing
-    - cp environements/test.conf etc/nginx/conf.d
+    - cp environments/test.conf etc/nginx/conf.d
     # Point load balancing to test upstream (linux search and replace)
     - find . -type f -name ".conf" -exec sed -i 's/${upstream}/dummy_servers_html/g' {} +
 
