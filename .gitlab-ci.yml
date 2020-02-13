@@ -42,6 +42,7 @@ test_nginx_conf: # CI_JOB_NAME
     # Point to Test environment for testing
     - cp environments/test.conf etc/nginx/conf.d
     - cat etc/nginx/conf.d/test.conf
+    - cat etc/nginx/conf.d/www.appster.com.conf
     # "nginx -T": Output full NGINX config for debugging
     - docker run --rm -t -a stdout --name $NAME_CONTAINER_NGINX --sysctl net.ipv4.ip_nonlocal_bind=1 -v "$(pwd)/etc/nginx/:/etc/nginx/" -v "$(pwd)/etc/ssl/:/etc/ssl/" $CONTAINER_NGINX_PLUS nginx -T
     # "nginx -t": test NGINX config for config errors
