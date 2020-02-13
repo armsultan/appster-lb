@@ -23,9 +23,7 @@ before_script:
     - cp environments/test.conf etc/nginx/conf.d
     - cat etc/nginx/conf.d/test.conf
     # Point load balancing to test upstream (linux search and replace)
-    - chmod +x ./configure_test.sh
-    - ./configure_test.sh 
-    # - find . -type f -name ".conf" -exec sed -i 's/${upstream}/dummy_servers_html/g' {} +
+    - find ./etc/nginx/ -type f -exec sed -i -e 's/${upstream}/dummy_servers_html/g' {} \;
     - cat etc/nginx/conf.d/www.appster.com.conf
 
 # configure_test_env: # CI_JOB_NAME
