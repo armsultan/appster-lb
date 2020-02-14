@@ -69,3 +69,38 @@ The last step in our pipline file, [`.gitlab-ci.yml`](.gitlab-ci.yml) does the f
 GIT_SSH_COMMAND='ssh -i $PRIVATE_KEY_FILE' git remote add master $PROD_USER@$PROD_HOST:appster_prod.git
 
 4.  Check the webpage over port 80
+
+--------------------------------------------------------------------------------
+https://petecoop.co.uk/blog/git-2-3-push-deploy
+# On live server
+mkdir ~/appster-lb
+cd ~/appster-lb
+git init
+
+## Build with Git hooks
+vim ~/appster-lb/.git/hooks/update
+
+```bash
+#!/bin/bash
+# rsync the updates nginx conf files and delete any files in destination not in source
+sudo rsync -avrzI --delete ~/appster-lb/etc/nginx/ /etc/nginx
+sudo nginx -s reload
+```
+
+Then set the correct permissions on it:
+
+```bash
+chmod 755 vim ~/appster-lb/.git/hooks/update
+```
+
+# On local build server
+git remote add deploy ssh://root@178.128.7.176/root/appster-lb
+git push deploy
+
+git push  <REMOTENAME> <BRANCHNAME> 
+As an example, you usually run git push origin master to push your local changes to your online repository.
+
+Renaming branches
+To rename a branch, you'd use the same git push command, but you would add one more argument: the name of the new branch. For example:
+git push  <REMOTENAME> <LOCALBRANCHNAME>:<REMOTEBRANCHNAME> 
+This pushes the LOCALBRANCHNAME to your REMOTENAME, but it is renamed to REMOTEBRANCHNAME.
