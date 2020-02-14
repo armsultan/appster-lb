@@ -53,9 +53,9 @@ push: # CI_JOB_NAME
   stage: push
   script:
     - sed -i -e '/#${servers}/{r environments/production.conf' -e 'd}' etc/nginx/conf.d/*.conf
-    - GIT_SSH_COMMAND='ssh -i $PRIVATE_KEY_FILE -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' git remote add deploy ssh://$PROD_USER@$PROD_HOST:~/appster-lb"
+    - GIT_SSH_COMMAND='ssh -i $PRIVATE_KEY_FILE -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' git remote add deploy ssh://$PROD_USER@$PROD_HOST:~/appster-lb
     - GIT_SSH_COMMAND='ssh -i $PRIVATE_KEY_FILE -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' git push deploy
-
+    # - ssh-agent sh -c 'ssh-add ~/.ssh/id_rsa; git fetch user@host'
 clean_up:
   stage: clean_up
   script:
