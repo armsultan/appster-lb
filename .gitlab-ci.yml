@@ -53,8 +53,8 @@ push: # CI_JOB_NAME
   stage: push
   script:
     - sed -i -e '/#${servers}/{r environments/production.conf' -e 'd}' etc/nginx/conf.d/*.conf
-    - echo "ssh -i $PRIVATE_KEY_FILE" git remote add deploy ssh://$PROD_USER@$PROD_HOST:~/appster-lb"
-    - echo "ssh -i $PRIVATE_KEY_FILE" git push deploy
+    - echo ssh -i $PRIVATE_KEY_FILE git remote add deploy ssh://$PROD_USER@$PROD_HOST:~/appster-lb"
+    - echo ssh -i $PRIVATE_KEY_FILE git push deploy
 
 clean_up:
   stage: clean_up
