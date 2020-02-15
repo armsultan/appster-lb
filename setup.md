@@ -47,19 +47,29 @@ git init
 git config receive.denyCurrentBranch updateInstead
 
 ## Build with Git hooks
-vim ~/appster-lb/.git/hooks/update
 
 ```bash
+cat <<EOT >> ~/appster-lb/.git/hooks/update
 #!/bin/bash
 # rsync the updates nginx conf files and delete any files in destination not in source
 sudo rsync -avrzI --delete ~/appster-lb/etc/nginx/ /etc/nginx
 sudo nginx -s reload
+EOT
 ```
 
-Then set the correct permissions on it:
+```bash
+cat <<EOT >> ~/appster-lb/.git/hooks/push-to-checkout
+#!/bin/sh
+set -ex
+git read-tree --reset -u HEAD "\$1"
+EOT
+```
+
+Then set the correct permissions both both files it:
 
 ```bash
-chmod 755 ~/appster-lb/.git/hooks/update
+chmod +x ~/appster-lb/.git/hooks/update
+chmod +x ~/appster-lb/.git/hooks/push-to-checkout
 ```
 
 # On local build server
@@ -119,3 +129,47 @@ Host github.com
   Hostname github.com
   IdentityFile ~/.ssh/id_rsa
 
+
+
+
+
+https://gist.github.com/noelboss/3fe13927025b89757f8fb12e9066f2fa
+https://www.digitalocean.com/community/tutorials/how-to-use-git-hooks-to-automate-development-and-deployment-tasks
+
+
+# On the production server
+
+git init --bare ~/deploy.git
+
+vim ~/deploy.git/hooks/post-receive
+```bash
+#!/bin/bash
+set -eu
+TARGET="/etc/nginx"
+GIT_DIR="/root/deploy.git/etc/nginx"
+BRANCH="master"
+
+while read oldrev newrev ref
+do
+        # only checking out the master (or whatever branch you would like to deploy)
+        if [[ $ref = refs/heads/"$BRANCH" ]];
+        then
+                echo "Ref $ref received. Deploying ${BRANCH} branch to production..."
+                git --work-tree="$TARGET" --git-dir="$GIT_DIR" checkout -f
+                # rsync the updates nginx conf files and delete any files in destination not in source
+		sudo rsync -avrzI --delete ~/appster-lb/etc/nginx/ /etc/nginx
+                sudo nginx -s reload
+        else
+                echo "Ref $ref received. Doing nothing: only the ${BRANCH} branch may be deployed on this server."
+        fi
+done
+```
+
+chmod +x ~/deploy.git/hooks/post-receive
+
+
+# On the working server e.g. build server
+git remote add production root@178.128.7.176:deploy.git
+git remote add production ssh://root@178.128.7.176/root/deploy.git
+git push production master
+git push -u -f production master
