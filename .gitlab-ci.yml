@@ -53,6 +53,7 @@ push: # CI_JOB_NAME
   stage: push
   script:
     - sed -i -e '/#${servers}/{r environments/production.conf' -e 'd}' etc/nginx/conf.d/*.conf
+    - git remote rm production 
     - GIT_SSH_COMMAND='ssh -i $PRIVATE_KEY_FILE -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' git remote add production $PROD_USER@$PROD_HOST:deploy
     - GIT_SSH_COMMAND='ssh -i $PRIVATE_KEY_FILE -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' git push -u -f production master
 clean_up:
